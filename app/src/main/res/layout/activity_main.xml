@@ -13,43 +13,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select Inception Point"
+        android:text="@string/select_incept"
         android:id="@+id/inceptionTextView"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/dateTextView"
-        android:layout_alignEnd="@+id/dateTextView" />
+        android:layout_alignEnd="@+id/dateTextView"
+        android:onClick="tvInceptionOnClick" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select Destination Point"
+        android:text="@string/select_dest"
         android:id="@+id/destinationTextView"
         android:layout_below="@+id/inceptionTextView"
         android:layout_alignRight="@+id/inceptionTextView"
         android:layout_alignEnd="@+id/inceptionTextView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="tvDestinationOnClick" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select Date"
+        android:text="@string/select_date"
         android:id="@+id/dateTextView"
         android:layout_below="@+id/destinationTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:onClick="tvDateOnClick" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:id="@+id/listViewIncept"
         android:layout_below="@+id/dateTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
 </RelativeLayout>
