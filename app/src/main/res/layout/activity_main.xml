@@ -9,51 +9,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ru.andrew.test.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/select_incept"
-        android:id="@+id/inceptionTextView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/dateTextView"
-        android:layout_alignEnd="@+id/dateTextView"
-        android:onClick="tvInceptionOnClick" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/select_dest"
-        android:id="@+id/destinationTextView"
-        android:layout_below="@+id/inceptionTextView"
-        android:layout_alignRight="@+id/inceptionTextView"
-        android:layout_alignEnd="@+id/inceptionTextView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="tvDestinationOnClick" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/select_date"
-        android:id="@+id/dateTextView"
-        android:layout_below="@+id/destinationTextView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="tvDateOnClick" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/textView"
+        android:layout_centerHorizontal="true" />
 
-    <ListView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewIncept"
-        android:layout_below="@+id/dateTextView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textView3"
+        android:layout_above="@+id/textView2"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

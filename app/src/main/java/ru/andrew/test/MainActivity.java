@@ -1,16 +1,28 @@
 package ru.andrew.test;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +36,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,141 +46,104 @@ import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView lvList;
-    TextView tvInception;
-    TextView tvDestination;
-    TextView tvDate;
-    ArrayList<String> inceptionPlace = new ArrayList<String>();
-    ArrayList<String> destinationPlace = new ArrayList<String>();
-    ArrayAdapter adapterInception;
-    ArrayAdapter adapterDestination;
-    String tvPressName;
-    boolean d = false;
 
+    private static final int REQUEST_TIMETABLE = 1;
+    private TextView tvFrom;
+    private TextView tvTo;
+    private TextView tvDate;
+    private String FromS;
+    private String ToS;
+    private String DateS;
+    private int gpd;
+    private int gpi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lvList = (ListView) findViewById(R.id.listViewIncept);
-        tvInception = (TextView) findViewById(R.id.inceptionTextView);
-        tvDestination = (TextView) findViewById(R.id.destinationTextView);
-        tvDate = (TextView) findViewById(R.id.dateTextView);
+        Log.d("Test", "onCreate");
 
-        tvInception.setTextColor(Color.rgb(150, 150, 150));
-        tvDestination.setTextColor(Color.rgb(150, 150, 150));
-        //creating JSONObject and read data from json
-        try {
-            JSONObject obj = new JSONObject(loadJSONFromAsset());
-            JSONArray m_jArrayFrom = obj.getJSONArray("citiesFrom");
-            JSONArray m_jArrayTo = obj.getJSONArray("citiesTo");
-           // Log.e("Test", m_jArray.getJSONObject(1).getString("countryTitle"));
-           //ArrayList<HashMap<String, String>> formList = new ArrayList<HashMap<String, String>>();
-
-            for (int i = 0; i < m_jArrayFrom.length(); i++) {
-                JSONObject jo_inside = m_jArrayFrom.getJSONObject(i);
-                if(d)
-                {
-                    Log.d("Details-->", jo_inside.getString("countryTitle"));
-                }
-                inceptionPlace.add(jo_inside.getString("countryTitle") + ", " + jo_inside.getString("cityTitle"));
-                if(d)
-                {
-                    Log.d("Details-->", jo_inside.getString("cityTitle"));
-                }
-
-            }
-
-            for (int i = 0; i < m_jArrayTo.length(); i++) {
-                JSONObject jo_inside = m_jArrayTo.getJSONObject(i);
-                if(d)
-                {
-                    Log.d("Details-->", jo_inside.getString("countryTitle"));
-                }
-
-                destinationPlace.add(jo_inside.getString("countryTitle") + ", " + jo_inside.getString("cityTitle"));
-                if(d)
-                {
-                    Log.d("Details-->", jo_inside.getString("cityTitle"));
-                }
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("Test", "exception occur");
-        }
-
-        adapterInception = new ArrayAdapter(this, android.R.layout.simple_list_item_1, inceptionPlace);
-        adapterDestination = new ArrayAdapter(this, android.R.layout.simple_list_item_1, destinationPlace);
-
-        lvList.setVisibility(View.GONE);
-
-        lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(tvPressName == "tvDestination")
-                {
-                    tvDestination.setText(getResources().getString(R.string.To) + " " + destinationPlace.get((int) id));
-                    tvDestination.setTextColor(Color.rgb(0, 0, 0));
-                    lvList.setVisibility(View.GONE);
-                }
-                if(tvPressName == "tvInception")
-                {
-                    tvInception.setText(getResources().getString(R.string.From)+ " " + inceptionPlace.get((int)id));
-                    tvInception.setTextColor(Color.rgb(0, 0, 0));
-                    lvList.setVisibility(View.GONE);
-                }
-
-            }
-        });
-
+        tvFrom = (TextView) findViewById(R.id.textView3);
+        tvTo = (TextView) findViewById(R.id.textView2);
+        tvDate = (TextView) findViewById(R.id.textView);
     }
 
-    //getting name of json file from assets
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("allStations.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
+    //menu with timetable and about
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 
-    public void tvInceptionOnClick(View v)
-    {
-        if(lvList.getVisibility() == View.GONE)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent TimetableIntent;
+        switch (item.getItemId())
         {
-            tvInception.setText(getResources().getString(R.string.select_incept));
-            tvInception.setTextColor(Color.rgb(150, 150, 150));
-            lvList.setAdapter(adapterInception);
-            lvList.setVisibility(View.VISIBLE);
-            tvPressName = "tvInception";
-        }
+            //for timetable - start another activity
+            case R.id.action_timetable:
+            TimetableIntent = new Intent(this, TimetableActivity.class) ;
+                startActivityForResult(TimetableIntent, REQUEST_TIMETABLE);
+                return true;
 
+            case R.id.action_about:
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle(getResources().getString(R.string.action_about))
+                        .setMessage(getResources().getString(R.string.message_about))
+                        .setCancelable(false)
+                        .setNegativeButton("ОК",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                AlertDialog alert = builder.create();
+                alert.show();
+        }
+        return false;
     }
 
-    public void tvDestinationOnClick(View v)
-    {
-        if(lvList.getVisibility() == View.GONE)
+    //get results data from timetable activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK)
         {
-            tvDestination.setText(getResources().getString(R.string.select_dest));
-            tvDestination.setTextColor(Color.rgb(150, 150, 150));
-            lvList.setAdapter(adapterInception);
-            lvList.setVisibility(View.VISIBLE);
-            tvPressName = "tvDestination";
+            if(requestCode == REQUEST_TIMETABLE)
+            {
+                FromS = data.getStringExtra("from");
+                ToS = data.getStringExtra("to");
+                DateS = data.getStringExtra("date");
+                gpd = data.getIntExtra("gpd", 0);
+                gpi = data.getIntExtra("gpi", 0);
+                tvFrom.setText("From: " + FromS);
+                tvTo.setText("To: " + ToS);
+                tvDate.setText(DateS);
+            }
         }
 
     }
 
-    public void tvDateOnClick(View v)
-    {
+    //function to save activity data during destroying activity at change orientation
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("groupPositionDest", gpd);
+        outState.putInt("groupPositionInc", gpi);
+        outState.putString("from", FromS);
+        outState.putString("to", ToS);
+        outState.putString("date", DateS);
 
+    }
+
+    //function to restore activity data during destroying activity at change orientation
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        gpd = savedInstanceState.getInt("groupPositionDest");
+        gpi = savedInstanceState.getInt("groupPositionInc");
+        FromS = savedInstanceState.getString("from");
+        ToS = savedInstanceState.getString("to");
+        DateS = savedInstanceState.getString("date");
+        tvFrom.setText("From: " + FromS);
+        tvTo.setText("To: " + ToS);
+        tvDate.setText(DateS);
     }
 }

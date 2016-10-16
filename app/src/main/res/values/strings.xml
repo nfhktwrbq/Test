@@ -5,4 +5,7 @@
     <string name="select_date">Select Date</string>
     <string name="From">From:</string>
     <string name="To">To:</string>
+    <string name="action_timetable">Timetable</string>
+    <string name="action_about">About</string>
+    <string name="message_about">Copyright \n Version 1.00</string>
 </resources>
